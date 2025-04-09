@@ -251,58 +251,47 @@ void AVLTree<Key, Value>::updateBalanceInsert(AVLNode<Key, Value>* node)
             parent->setBalance(0);
             node->setBalance(0);
         }
-        else if (node == parent->getLeft()->getRight()) {
+        else {
             // Zig-Zag Left Case
-            AVLNode<Key, Value>* child = node;
-            rotateLeft(parent->getLeft());
+            AVLNode<Key, Value>* leftChild = parent->getLeft();
+            rotateLeft(leftChild);
             rotateRight(parent);
 
-            // Fix balances after double rotation
-            int8_t childBalance = child->getBalance();
-            if (childBalance == -1) {
+            if (node->getBalance() == -1) {
                 parent->setBalance(1);
-                child->setBalance(0);
-                parent->getRight()->setBalance(0);
-            } else if (childBalance == 1) {
+                leftChild->setBalance(0);
+            } else if (node->getBalance() == 1) {
                 parent->setBalance(0);
-                child->setBalance(0);
-                parent->getRight()->setBalance(-1);
+                leftChild->setBalance(-1);
             } else {
                 parent->setBalance(0);
-                child->setBalance(0);
-                parent->getRight()->setBalance(0);
+                leftChild->setBalance(0);
             }
+            node->setBalance(0);
         }
     }
     else if (parentBalance == 2) {
-        // Right heavy
         if (node == parent->getRight()->getRight()) {
-            // Zig-Zig Right Case
             rotateLeft(parent);
             parent->setBalance(0);
             node->setBalance(0);
         }
-        else if (node == parent->getRight()->getLeft()) {
-            // Zig-Zag Right Case
-            AVLNode<Key, Value>* child = node;
-            rotateRight(parent->getRight());
+        else {
+            AVLNode<Key, Value>* rightChild = parent->getRight();
+            rotateRight(rightChild);
             rotateLeft(parent);
 
-            // Fix balances after double rotation
-            int8_t childBalance = child->getBalance();
-            if (childBalance == 1) {
+            if (node->getBalance() == 1) {
                 parent->setBalance(-1);
-                child->setBalance(0);
-                parent->getLeft()->setBalance(0);
-            } else if (childBalance == -1) {
+                rightChild->setBalance(0);
+            } else if (node->getBalance() == -1) {
                 parent->setBalance(0);
-                child->setBalance(0);
-                parent->getLeft()->setBalance(1);
+                rightChild->setBalance(0);
             } else {
                 parent->setBalance(0);
-                child->setBalance(0);
-                parent->getLeft()->setBalance(0);
+                rightChild->setBalance(0);
             }
+            node->setBalance(0);
         }
     }
 }
@@ -370,7 +359,7 @@ void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value>* node)
         parent->setRight(right);
     }
 
-    int8_t rba = right->getBalance();
+    int8_t rb= right->getBalance();
 
     if (rb == 0) {
         node->setBalance(1);
