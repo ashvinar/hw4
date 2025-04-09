@@ -361,16 +361,6 @@ void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value>* node)
     } else {
         parent->setRight(right);
     }
-
-    int8_t rb= right->getBalance();
-
-    if (rb == 0) {
-        node->setBalance(1);
-        right->setBalance(-1);
-    } else {
-        node->setBalance(0);
-        right->setBalance(0);
-    }
 }
 
 template<class Key, class Value>
@@ -393,17 +383,8 @@ void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value>* node)
     } else {
         parent->setRight(left);
     }
-
-    int8_t lb = left->getBalance();
-
-    if (lb == 0) {
-        node->setBalance(-1);
-        left->setBalance(1);
-    } else {
-        node->setBalance(0);
-        left->setBalance(0);
-    }
 }
+
 
 template<class Key, class Value>
 void AVLTree<Key, Value>::nodeSwap( AVLNode<Key,Value>* n1, AVLNode<Key,Value>* n2)
