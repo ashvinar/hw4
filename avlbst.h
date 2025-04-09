@@ -298,7 +298,6 @@ void AVLTree<Key, Value>::updateBalanceInsert(AVLNode<Key, Value>* node)
         }
     }
 }
-
 template<class Key, class Value>
 void AVLTree<Key, Value>::updateBalanceRemove(AVLNode<Key, Value>* node, int diff)
 {
@@ -307,35 +306,110 @@ void AVLTree<Key, Value>::updateBalanceRemove(AVLNode<Key, Value>* node, int dif
     node->updateBalance(diff);
     int8_t balance = node->getBalance();
 
-    if (balance == -1 || balance == 1) return;
-
-    if (balance == -2) {
+    if (balance == -2)
+    {
         AVLNode<Key, Value>* left = node->getLeft();
         int8_t lbal = left->getBalance();
-        if (lbal <= 0) {
+
+        if (lbal <= 0)
+        {
             rotateRight(node);
-            if (lbal == 0) return;
-        } else {
+            if (lbal == 0)
+            {
+                node->setBalance(-1);
+                left->setBalance(1);
+                return;
+            }
+            else
+            {
+                node->setBalance(0);
+                left->setBalance(0);
+            }
+        }
+        else // lbal == 1
+        {
+            AVLNode<Key, Value>* lr = left->getRight();
+            int8_t lrbal = lr->getBalance();
             rotateLeft(left);
             rotateRight(node);
+
+            if (lrbal == -1)
+            {
+                node->setBalance(1);
+                left->setBalance(0);
+            }
+            else if (lrbal == 1)
+            {
+                node->setBalance(0);
+                left->setBalance(-1);
+            }
+            else
+            {
+                node->setBalance(0);
+                left->setBalance(0);
+            }
+            lr->setBalance(0);
         }
-    } else if (balance == 2) {
+    }
+    else if (balance == 2)
+    {
         AVLNode<Key, Value>* right = node->getRight();
         int8_t rbal = right->getBalance();
-        if (rbal >= 0) {
+
+        if (rbal >= 0)
+        {
             rotateLeft(node);
-            if (rbal == 0) return;
-        } else {
+            if (rbal == 0)
+            {
+                node->setBalance(1);
+                right->setBalance(-1);
+                return;
+            }
+            else
+            {
+                node->setBalance(0);
+                right->setBalance(0);
+            }
+        }
+        else // rbal == -1
+        {
+            AVLNode<Key, Value>* rl = right->getLeft();
+            int8_t rlbal = rl->getBalance();
             rotateRight(right);
             rotateLeft(node);
+
+            if (rlbal == 1)
+            {
+                node->setBalance(-1);
+                right->setBalance(0);
+            }
+            else if (rlbal == -1)
+            {
+                node->setBalance(0);
+                right->setBalance(1);
+            }
+            else
+            {
+                node->setBalance(0);
+                right->setBalance(0);
+            }
+            rl->setBalance(0);
         }
+    }
+    else if (balance != 0)
+    {
+        return;
     }
 
     AVLNode<Key, Value>* parent = node->getParent();
-    if (parent != NULL) {
-        if (parent->getLeft() == node) {
+    if (parent != NULL)
+    {
+        if (parent->getLeft() == node)
+        {
             updateBalanceRemove(parent, 1);
-        } else {
+        }
+        else
+        {
             updateBalanceRemove(parent, -1);
         }
     }
