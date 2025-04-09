@@ -245,13 +245,13 @@ void AVLTree<Key, Value>::updateBalanceInsert(AVLNode<Key, Value>* node)
     }
     else if (parentBalance == -2) {
         // Left heavy
-        if (node == parent->getLeft()->getLeft()) {
+        if (parent->getLeft() && node == parent->getLeft()->getLeft()) {
             // Zig-Zig Left Case
             rotateRight(parent);
             parent->setBalance(0);
             node->setBalance(0);
         }
-        else {
+        else if (parent->getLeft() && node == parent->getLeft()->getRight()) {
             // Zig-Zag Left Case
             AVLNode<Key, Value>* leftChild = parent->getLeft();
             rotateLeft(leftChild);
@@ -271,12 +271,15 @@ void AVLTree<Key, Value>::updateBalanceInsert(AVLNode<Key, Value>* node)
         }
     }
     else if (parentBalance == 2) {
-        if (node == parent->getRight()->getRight()) {
+        // Right heavy
+        if (parent->getRight() && node == parent->getRight()->getRight()) {
+            // Zig-Zig Right Case
             rotateLeft(parent);
             parent->setBalance(0);
             node->setBalance(0);
         }
-        else {
+        else if (parent->getRight() && node == parent->getRight()->getLeft()) {
+            // Zig-Zag Right Case
             AVLNode<Key, Value>* rightChild = parent->getRight();
             rotateRight(rightChild);
             rotateLeft(parent);
@@ -286,7 +289,7 @@ void AVLTree<Key, Value>::updateBalanceInsert(AVLNode<Key, Value>* node)
                 rightChild->setBalance(0);
             } else if (node->getBalance() == -1) {
                 parent->setBalance(0);
-                rightChild->setBalance(0);
+                rightChild->setBalance(1);
             } else {
                 parent->setBalance(0);
                 rightChild->setBalance(0);
